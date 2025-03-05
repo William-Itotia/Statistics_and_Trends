@@ -8,7 +8,7 @@ Make use of the functions presented in the lectures
 and ensure your code is PEP-8 compliant, including docstrings.
 """
 
-from corner import corner
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -18,21 +18,20 @@ import seaborn as sns
 
 def plot_relational_plot(df):
     """
-    Plots line graph that looks at the average conversion rate 
-    vs total ads shown, for the different test groups ads and 
-    psa with the total ads on the x column being log binned 
+    Plots line graph that looks at the average conversion rate
+    vs total ads shown, for the different test groups ads and
+    psa with the total ads on the x column being log binned
     due to the uneven spread of data. 
     """
     fig, ax = plt.subplots(1, 2, figsize=(12, 5))
-    
-     # Define logarithmic bins based on total ads
+    # Define logarithmic bins based on total ads
     bins = np.logspace(0, np.log10(df["total ads"].max()), num=10)
 
     # Assign bins using pd.cut()
     df["log_ads_bin"] = pd.cut(
     df["total ads"], 
-    bins=bins, 
-    labels=[f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins) - 1)])
+                    bins=bins, 
+                            labels=[f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins) - 1)])
 
     # Split into two groups (ad vs. psa)
     groups = df["test group"].unique()
@@ -43,7 +42,8 @@ def plot_relational_plot(df):
         conversion_rates = grouped * 100
 
         plt.subplot(1, 2, i)
-        sns.lineplot(x=conversion_rates.index, y=conversion_rates.values, marker="o")
+        sns.lineplot(x=conversion_rates.index, y=conversion_rates.values, 
+                     marker="o")
         plt.xticks(rotation=45)
         plt.xlabel("Total Ads Shown (Log Binned)")
         plt.ylabel("Average Conversion Rate (%)")
@@ -56,8 +56,8 @@ def plot_relational_plot(df):
 
 def plot_categorical_plot(df):
     """
-    Plots bar plot that looks at conversion rate of total ads below and above 100
-    ads for both test groups psa and ad
+    Plots bar plot that looks at conversion rate of total ads below and 
+    above 100 ads for both test groups psa and ad
     """
     fig, ax = plt.subplots(1, 2, figsize=(12, 5))
 
@@ -66,14 +66,13 @@ def plot_categorical_plot(df):
     # Create categories
 
     df["ads_category"] = df["total ads"].apply(
-    lambda x: "Above 100 Ads" if x > threshold else "Below 100 Ads")
+        lambda x: "Above 100 Ads" if x > threshold else "Below 100 Ads")
 
     # Split by test group
     groups = ["ad", "psa"]
     for i, group in enumerate(groups):
         subset = df[df["test group"] == group]
         conversion_rates = subset.groupby("ads_category")["converted"].mean() * 100
-
         ax = plt.subplot(1, 2, i + 1)
         sns.barplot(x=conversion_rates.index, y=conversion_rates.values, 
                     palette="husl", ax=ax)
@@ -92,7 +91,7 @@ def plot_categorical_plot(df):
 
 def plot_statistical_plot(df):
     """
-    Plots correlation heatmaps for 'converted' and 'total ads' separately 
+    Plots correlation heatmaps for 'converted' and 'total ads' separately
     for test groups 'ad' and 'psa'.
     """
     fig, ax = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
@@ -108,7 +107,7 @@ def plot_statistical_plot(df):
 
 def statistical_analysis(df, col: str):
     """
-    Computes statistical moments (mean, standard deviation, skewness, 
+    Computes statistical moments (mean, standard deviation, skewness,
     excess kurtosis) for a given column.
     """
     mean = df['total ads'].mean()
