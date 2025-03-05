@@ -3,10 +3,11 @@ This is the template file for the statistics and trends assignment.
 You will be expected to complete all the sections and
 make this a fully working, documented file.
 You should NOT change any function, file or variable names,
-if they are given to you here.
+ if they are given to you here.
 Make use of the functions presented in the lectures
 and ensure your code is PEP-8 compliant, including docstrings.
 """
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,11 +29,9 @@ def plot_relational_plot(df):
 
     # Assign bins using pd.cut()
     df["log_ads_bin"] = pd.cut(
-        df["total ads"], 
-        bins=bins, 
-        labels=[f"{int(bins[i])}-{int(bins[i+1])}" 
-                for i in range(len(bins) - 1)]
-    )
+    df["total ads"], 
+                    bins=bins, 
+                            labels=[f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins) - 1)])
 
     # Split into two groups (ad vs. psa)
     groups = df["test group"].unique()
@@ -57,31 +56,28 @@ def plot_relational_plot(df):
 
 def plot_categorical_plot(df):
     """
-    Plots bar plot that looks at conversion rate of total ads below and 
-    above 100 ads for both test groups psa and ad.
+    Plots bar plot that looks at conversion rate of total ads below and above 100
+    ads for both test groups psa and ad
     """
     fig, ax = plt.subplots(1, 2, figsize=(12, 5))
-
     threshold = 100  # Define the threshold for ad count
     df["converted"] = df["converted"].astype(int)  # Convert boolean to int
     # Create categories
     df["ads_category"] = df["total ads"].apply(
-        lambda x: "Above 100 Ads" if x > threshold else "Below 100 Ads"
-    )
-
+        lambda x: "Above 100 Ads" if x > threshold else "Below 100 Ads")
     # Split by test group
     groups = ["ad", "psa"]
     for i, group in enumerate(groups):
         subset = df[df["test group"] == group]
         conversion_rates = subset.groupby("ads_category")["converted"].mean() * 100
+
         ax = plt.subplot(1, 2, i + 1)
         sns.barplot(x=conversion_rates.index, y=conversion_rates.values, 
                     palette="husl", ax=ax)
-
         # Add text labels on bars
         for j, value in enumerate(conversion_rates.values):
-            ax.text(j, value + 1, f"{value:.2f}%", ha="center", fontsize=12, 
-                    color="black", fontweight="bold")
+            ax.text(j, value + 1, f"{value:.2f}%", ha="center", 
+                    fontsize=12, color="black", fontweight="bold")
         ax.set_ylabel("Conversion Rate (%)")
         ax.set_title(f"Conversion Rate Above and Below {threshold} Ads\n(Test Group: {group})")
         ax.set_ylim(0, 100)
@@ -120,7 +116,7 @@ def statistical_analysis(df, col: str):
 
 def preprocessing(df):
     """
-    Preprocessing function that does the following:
+    Preporecessing function that does the following:
     - Displays first 5 rows
     - Shows summary statistics
     - Prints missing values count
